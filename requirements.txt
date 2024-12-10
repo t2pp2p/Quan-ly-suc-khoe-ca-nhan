@@ -1,4 +1,0 @@
-PyQt6==6.7.1
-PyQt6_sip==13.8.0
-PyQt6_sip==13.9.0
-python_bcrypt==0.3.2
