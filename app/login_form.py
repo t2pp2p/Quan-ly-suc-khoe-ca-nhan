@@ -18,6 +18,8 @@ import json
 import base64
 from pathlib import Path
 
+image_dir = Path(__file__).resolve().parent.parent / 'assets/images'
+icon_dir = Path(__file__).resolve().parent.parent / 'assets/icons'
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -37,7 +39,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_login_2.setFont(font)
-        self.label_login_2.setStyleSheet("border-image: url(G:/GUI/images/1357625_cp2.png);\n"
+        self.label_login_2.setStyleSheet(f"border-image: url({image_dir.as_posix()}/1357625_cp2.png);\n"
 "border-top-left-radius:10px;\n"
 "border-bottom-left-radius:10px;")
         self.label_login_2.setText("")
@@ -97,7 +99,7 @@ class Ui_Form(object):
         font.setFamily("Roboto")
         self.pushButton_2.setFont(font)
         self.pushButton_2.setStyleSheet("background-color:rgba(59, 61, 60,80);\n"
-"border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);\n"
+f"border-image: url({icon_dir.as_posix()}/55ovjpq6bo1dpbpq69e2m1lvrq.png);\n"
 "border-radius:15px;")
         self.pushButton_2.setText("")
         self.pushButton_2.setObjectName("pushButton_2")
@@ -195,7 +197,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_login.setFont(font)
-        self.label_login.setStyleSheet("border-image: url(G:/GUI/images/1357625_cp2.png);\n"
+        self.label_login.setStyleSheet(f"border-image: url({image_dir.as_posix()}/1357625_cp2.png);\n"
 "border-top-left-radius:10px;\n"
 "border-bottom-left-radius:10px;")
         self.label_login.setText("")
@@ -269,7 +271,7 @@ class Ui_Form(object):
         font.setFamily("Roboto")
         self.pushButton.setFont(font)
         self.pushButton.setStyleSheet("background-color:rgba(59, 61, 60,80);\n"
-"border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);\n"
+f"border-image: url({icon_dir.as_posix()}/55ovjpq6bo1dpbpq69e2m1lvrq.png);\n"
 "border-radius:15px;")
         self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
@@ -381,7 +383,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_2.setFont(font)
-        self.label_2.setStyleSheet("border-image: url(G:/GUI/images/ss_cp.jpg);\n"
+        self.label_2.setStyleSheet(f"border-image: url({image_dir.as_posix()}/ss_cp.jpg);\n"
 "border-top-right-radius:10px;\n"
 "border-bottom-right-radius:10px;")
         self.label_2.setText("")
@@ -394,7 +396,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_11.setFont(font)
-        self.label_11.setStyleSheet("border-image: url(G:/GUI/images/female-psychologist-consulting-patient-desk-hospital.jpg);\n"
+        self.label_11.setStyleSheet(f"border-image: url({image_dir.as_posix()}/female-psychologist-consulting-patient-desk-hospital.jpg);\n"
 "border-top-right-radius:10px;\n"
 "border-bottom-right-radius:10px;")
         self.label_11.setText("")
@@ -407,7 +409,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_12.setFont(font)
-        self.label_12.setStyleSheet("border-image: url(G:/GUI/images/assortment-fresh-vegetables-herbs.jpg);\n"
+        self.label_12.setStyleSheet(f"border-image: url({image_dir.as_posix()}/assortment-fresh-vegetables-herbs.jpg);\n"
 "border-top-right-radius:10px;\n"
 "border-bottom-right-radius:10px;")
         self.label_12.setText("")
@@ -420,7 +422,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_16.setFont(font)
-        self.label_16.setStyleSheet("border-image: url(G:/GUI/images/woman-stretching-her-legs-with-statistics-background.jpg);\n"
+        self.label_16.setStyleSheet(f"border-image: url({image_dir.as_posix()}/woman-stretching-her-legs-with-statistics-background.jpg);\n"
 "border-top-right-radius:10px;\n"
 "border-bottom-right-radius:10px;")
         self.label_16.setText("")
@@ -433,7 +435,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.label_13.setFont(font)
-        self.label_13.setStyleSheet("border-image: url(G:/GUI/images/winter_cr.png);\n"
+        self.label_13.setStyleSheet(f"border-image: url({image_dir.as_posix()}/winter_cr.png);\n"
 "border-top-right-radius:10px;\n"
 "border-bottom-right-radius:10px;")
         self.label_13.setText("")
@@ -575,39 +577,29 @@ class Ui_Form(object):
     #################
     ## Các trường điền filled thì enable nút bấm và highlights
     def update_button_style(self, button, enabled):
-            """
-            Cập nhật kiểu giao diện cho nút bấm dựa trên trạng thái enabled.
-            """
             if enabled:
-                    button.setStyleSheet("""
-            QPushButton {
-                background-color: rgba(59, 61, 60, 200);
-                border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                border-radius: 15px;
-                border: none;
-            }
-            QPushButton:hover {
-                background-color: rgba(240, 44, 5, 200);
-            }""")
+                    button.setStyleSheet(f"""
+                    QPushButton {{
+                        background-color: rgba(59, 61, 60, 200);
+                        border-image: url({icon_dir.as_posix()}/55ovjpq6bo1dpbpq69e2m1lvrq.png);
+                        border-radius: 15px;
+                        border: none;
+                    }}
+                    QPushButton:hover {{
+                        background-color: rgba(240, 44, 5, 200);
+                    }}""")
                     button.setDisabled(False)
             else:
-                    button.setStyleSheet("""
-            QPushButton {
-                background-color: rgba(59, 61, 60, 80);
-                border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                border-radius: 15px;
-                border: none;
-            }""")
+                    button.setStyleSheet(f"""
+                    QPushButton {{
+                        background-color: rgba(59, 61, 60, 80);
+                        border-image: url({icon_dir.as_posix()}/55ovjpq6bo1dpbpq69e2m1lvrq.png);
+                        border-radius: 15px;
+                        border: none;
+                    }}""")
                     button.setDisabled(True)
 
     def check_inputs(self, line_edits, button):
-            """
-            Kiểm tra nếu tất cả các trường input có giá trị, sau đó cập nhật nút bấm.
-
-            Args:
-                line_edits (list): Danh sách các trường QLineEdit cần kiểm tra.
-                button (QPushButton): Nút bấm cần cập nhật.
-            """
             all_filled = all(line_edit.text().strip() for line_edit in line_edits)
             self.update_button_style(button, all_filled)
 
