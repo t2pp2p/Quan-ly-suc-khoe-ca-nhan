@@ -12,7 +12,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from cProfile import label
 import re
-from database import add_user, can_login
+from database import add_user, can_login, exist_user
 import bcrypt
 import json
 import base64
@@ -572,49 +572,59 @@ class Ui_Form(object):
             next_index = (current_index + 1) % self.stackedWidget_2.count()
             self.stackedWidget_2.setCurrentIndex(next_index)
 
-    def check_inputs_login(self):
-            if self.lineEdit.text() and self.lineEdit_2.text():
-                    self.pushButton.setStyleSheet("""
-                    QPushButton {
-                        background-color:rgba(59, 61, 60,200);
-                        border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                        border-radius:15px;
-                        border: none;
-                    }
-                    QPushButton:hover {
-                    background-color: rgba(240, 44, 5, 200);}""")
-                    self.pushButton.setDisabled(False)
+    #################
+    ## Các trường điền filled thì enable nút bấm và highlights
+    def update_button_style(self, button, enabled):
+            """
+            Cập nhật kiểu giao diện cho nút bấm dựa trên trạng thái enabled.
+            """
+            if enabled:
+                    button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(59, 61, 60, 200);
+                border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
+                border-radius: 15px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: rgba(240, 44, 5, 200);
+            }""")
+                    button.setDisabled(False)
             else:
-                    self.pushButton.setStyleSheet("""
-                    QPushButton {
-                    background-color:rgba(59, 61, 60,80);
-                    border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                    border-radius:15px;
-                    border: none;}""")
-                    self.pushButton.setDisabled(True)
+                    button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(59, 61, 60, 80);
+                border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
+                border-radius: 15px;
+                border: none;
+            }""")
+                    button.setDisabled(True)
+
+    def check_inputs(self, line_edits, button):
+            """
+            Kiểm tra nếu tất cả các trường input có giá trị, sau đó cập nhật nút bấm.
+
+            Args:
+                line_edits (list): Danh sách các trường QLineEdit cần kiểm tra.
+                button (QPushButton): Nút bấm cần cập nhật.
+            """
+            all_filled = all(line_edit.text().strip() for line_edit in line_edits)
+            self.update_button_style(button, all_filled)
+
+    def check_inputs_login(self):
+            self.check_inputs([self.lineEdit, self.lineEdit_2], self.pushButton)
 
     def check_inputs_signup(self):
-            if self.lineEdit_3.text() and self.lineEdit_4.text() and self.lineEdit_5.text():
-                    self.pushButton_2.setStyleSheet("""
-                    QPushButton {
-                        background-color:rgba(59, 61, 60,200);
-                        border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                        border-radius:15px;
-                        border: none;
-                    }
-                    QPushButton:hover {
-                    background-color: rgba(240, 44, 5, 200);}""")
-                    self.pushButton_2.setDisabled(False)
-            else:
-                    self.pushButton_2.setStyleSheet("""
-                    QPushButton {
-                    background-color:rgba(59, 61, 60,80);
-                    border-image: url(C:/Users/_t2p/Downloads/55ovjpq6bo1dpbpq69e2m1lvrq.png);
-                    border-radius:15px;
-                    border: none;}""")
-                    self.pushButton_2.setDisabled(True)
+            self.check_inputs([self.lineEdit_3, self.lineEdit_4, self.lineEdit_5], self.pushButton_2)
 
+    def update_label(self, label, text, color):
+            label.setStyleSheet(f"color: {color}; border: none; font-weight: bold; background-color: transparent;")
+            label.setText(text)
 
+    def clear_signup_form(self):
+            self.lineEdit_3.clear()
+            self.lineEdit_4.clear()
+            self.lineEdit_5.clear()
 
     ####################################################################
     ##          CÁC HÀM XỬ LÝ BACKEND CHO LOGIN/SIGN UP Ở ĐÂY         ##
@@ -624,73 +634,53 @@ class Ui_Form(object):
             if code == 0:
                 self.stackedWidget.setCurrentIndex(0)
                 self.label.setText("")
-                self.lineEdit_3.setText("")
-                self.lineEdit_4.setText("")
-                self.lineEdit_5.setText("")
+                self.clear_signup_form()
             else:
                 self.stackedWidget.setCurrentIndex(1)
-
 
     def login(self):
             username = self.lineEdit.text()
             password = self.lineEdit_2.text()
 
-            if not self.is_valid_username(username) or not self.is_valid_password(password):
-                    self.label_14.setText("Thông tin đăng nhập không hợp lệ!")
+            if not self.is_valid_username(username):
+                    self.update_label(self.label_14, "Đăng nhập thất bại!", "red")
                     return
+
+            if not self.is_valid_password(password):
+                    self.update_label(self.label_14, "Đăng nhập thất bại!", "red")
+                    return
+
             if can_login(username, password):
-                    self.label_14.setText("OK")
-                    if self.checkBox.isChecked():
-                            self.save_login_info(username, password, True)
-                    else:
-                            self.save_login_info(username, None, False)
+                    self.update_label(self.label_14, "Đăng nhập thành công!", "green")
+                    self.save_login_info(username, password if self.checkBox.isChecked() else None,
+                                         self.checkBox.isChecked())
             else:
-                    self.label_14.setText("Thông tin đăng nhập không chính xác!")
+                    self.update_label(self.label_14, "Đăng nhập thất bại!", "red")
 
     def signup(self):
-            status = True
-            text_warning = ""
-            if not self.is_valid_username(self.lineEdit_3.text()):
-                    text_warning += "Tên đăng nhập không hợp lệ."
-                    status = False
+            username = self.lineEdit_3.text()
+            password = self.lineEdit_4.text()
+            confirm_password = self.lineEdit_5.text()
 
-            if not self.is_valid_password(self.lineEdit_4.text()):
-                    text_warning += "\nMật khẩu phải có ít nhất 8 kí tự"
-                    status = False
-            else:
-                    if self.lineEdit_4.text() != self.lineEdit_5.text():
-                            status = False
-                            text_warning += "\nXác nhận mật chưa đúng."
-            if not status:
-                    self.label.setStyleSheet("""
-                    color:red;
-border: none;
-font-weight: bold;
-background-color: transparent;""")
-                    self.label.setText(text_warning)
-            else:
-                    self.label.setStyleSheet("""
-                    QLabel {
-                    color:green;
-border: none;
-font-weight: bold;
-background-color: transparent;
-                    }
-                    """)
+            error_messages = []
+            if not self.is_valid_username(username):
+                    error_messages.append("Tên đăng nhập không hợp lệ.")
+            if not self.is_valid_password(password):
+                    error_messages.append("Mật khẩu phải có ít nhất 8 kí tự.")
+            elif password != confirm_password:
+                    error_messages.append("Xác nhận mật khẩu không khớp.")
 
-                    hashed_password = bcrypt.hashpw(self.lineEdit_4.text().encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                    add_user(self.lineEdit_3.text(), hashed_password)
+            if exist_user(username):
+                    error_messages.append("Tên đăng nhập đã tồn tại.")
 
-                    self.lineEdit.setText(self.lineEdit_3.text())
-                    self.lineEdit_4.setText("")
-                    self.label.setText("Đăng ký thành công!")
-                    self.lineEdit_3.setText("")
-                    self.lineEdit_4.setText("")
-                    self.lineEdit_5.setText("")
+            if error_messages:
+                    self.update_label(self.label, "\n".join(error_messages), "red")
+                    return
 
-
-
-
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            add_user(username, hashed_password)
+            self.update_label(self.label, "Đăng ký thành công!", "green")
+            self.clear_signup_form()
 
 
     def is_valid_username(self, username):
