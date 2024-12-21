@@ -17,3 +17,7 @@ pip install -r requirements.txt
 ```zsh
 python3 main.py
 ```
+
+## Lưu ý
+### Khởi tạo database nếu chưa có trong `/database/create_db.py`
+### Các handlers có thể không hoạt động nếu sai đường dẫn, sửa lại trong `/app/main_app.py`
