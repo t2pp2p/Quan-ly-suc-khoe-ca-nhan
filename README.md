@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ## Chạy chương trình
 
 ```zsh
-python3 main.py
+python3 /app/login_form.py
 ```
 
 ## Lưu ý
